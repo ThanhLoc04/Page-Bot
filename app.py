@@ -82,4 +82,4 @@ def check_page_access_token():
         logger.error("Invalid page access token: %s", response.json())
 
 if __name__ == '__main__':
-    app.run(port=int(os.getenv("PORT", 8080)))
+    app.run(port=int(os.getenv("PORT", 3000)))
