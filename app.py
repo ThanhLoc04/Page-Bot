@@ -72,7 +72,7 @@ def send_message(recipient_id, message_text):
         logger.error("Failed to send message: %s", response.json())
 
 # Test page access token validity
-@app.before_first_request
+@app.before_request
 def check_page_access_token():
     test_url = f"https://graph.facebook.com/me?access_token={PAGE_ACCESS_TOKEN}"
     response = requests.get(test_url)
