@@ -2,4 +2,4 @@ Flask
 requests
 python-dotenv
 flask-cors
-google generativeai
+google-generativeai
