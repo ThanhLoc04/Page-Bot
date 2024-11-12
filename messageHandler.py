@@ -8,8 +8,13 @@ from io import BytesIO
 # Load environment variables
 load_dotenv()
 
+# Get API key from environment variable
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    raise ValueError("API Key not found. Please check your .env file.")
+
 # Configure Google Generative AI
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=api_key)
 
 # Configure logging
 logger = logging.getLogger()
@@ -72,21 +77,13 @@ def handle_attachment(attachment_data, attachment_type="image"):
         logger.info("Direct image received for processing.")
         
         try:
-            # Send image data for processing (if supported by model)
-            chat = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
-                generation_config={
-                    "temperature": 0.3,
-                    "top_p": 0.95,
-                    "top_k": 64,
-                    "max_output_tokens": 8192,
-                }
-            ).start_chat(history=[])
+            # Use another API like Google Vision API for image processing (if supported)
+            # If you still want to process images using generative AI, make sure the model supports it
 
-            # Generate response for the image (modify if direct image processing is supported)
-            response = chat.send_message(f"{system_instruction}\n\nAnalyze this image.")
+            response = "Image received, but processing with generative AI may not be supported."
+
             logger.info("Image processed successfully.")
-            return response.text
+            return response
 
         except Exception as e:
             logger.error("Failed to process image: %s", str(e))
