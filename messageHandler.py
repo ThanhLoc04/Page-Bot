@@ -54,7 +54,7 @@ def handle_text_message(user_message):
         logger.error("Error processing text message: %s", str(e))
         return "Sorry, I encountered an error processing your message."
 
-# Handle text commands
+# Handle text commands (dynamically import all .py files in CMD)
 def handle_text_command(command_name):
     try:
         # Get the path to the CMD directory
@@ -67,10 +67,15 @@ def handle_text_command(command_name):
                 try:
                     # Dynamically import the module
                     cmd_module = importlib.import_module(f"{cmd_folder}.{module_name}")
-                    logger.info(f"Module {module_name} loaded successfully.")
                     
-                    # Call the execute function from the module
-                    return cmd_module.execute()
+                    # Check if the module has an execute function
+                    if hasattr(cmd_module, 'execute'):
+                        logger.info(f"Module {module_name} loaded successfully.")
+                        return cmd_module.execute()  # Call the execute function from the module
+                    else:
+                        logger.warning(f"Module {module_name} does not have an execute function.")
+                        continue
+
                 except Exception as e:
                     logger.error(f"Error loading module {module_name}: {e}")
                     continue
@@ -94,10 +99,10 @@ def handle_attachment(attachment_data, attachment_type="image"):
         logger.info("Direct image received for processing.")
         
         try:
-            # Use another API like Google Vision API for image processing (if supported)
-            # If you still want to process images using generative AI, make sure the model supports it
+            # If you want to process images, use Google Cloud Vision API for image processing
+            # Example placeholder response since Gemini AI doesn't support direct image analysis
 
-            response = "Image received, but processing with generative AI may not be supported."
+            response = "Image received, but processing with Google Generative AI may not be supported for image analysis."
 
             logger.info("Image processed successfully.")
             return response
