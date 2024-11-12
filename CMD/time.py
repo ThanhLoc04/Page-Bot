@@ -1,11 +1,29 @@
-import time;
+import time
 import calendar
 
-period=time.asctime(time.localtime(time.time()))
-
-cal=calendar.month(2024,11)
-localtime=time.localtime (time.time())
-
-year,month,day,hour, minute=localtime[0:5]
-print( """_____________________\n|\n|Today's Date is 🌍\n_____
-""",'⏰ Time|'+ str(hour)+":"+str(minute),"\n","🗺️ Date|"+str(month)+":"+str(day), '\n|\n_____Calender📜_______\n|'+cal+'\n|_____________________\n|', period[0:11],'\n______________________')
+def execute():
+    # Get the current time and date information
+    localtime = time.localtime(time.time())
+    period = time.asctime(localtime)
+    cal = calendar.month(localtime.tm_year, localtime.tm_mon)
+    
+    # Extract relevant parts of the local time
+    year, month, day, hour, minute = localtime[0:5]
+    
+    # Format the output
+    response = (
+        "________________________\n"
+        "|                       |\n"
+        "| Today's Date 🌍       |\n"
+        "|_______________________|\n"
+        f"⏰ Time      | {hour:02d}:{minute:02d}\n"
+        f"🗺️ Date      | {month}/{day}/{year}\n"
+        "|                       |\n"
+        "|_______ Calendar 📜 ___|\n"
+        f"{cal}\n"
+        "|_______________________|\n"
+        f"| {period[:11]}\n"
+        "________________________"
+    )
+    
+    return response
