@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 def execute():
     # Define the URL to scrape for EPL news
@@ -27,7 +28,9 @@ def execute():
     for article in news_articles[:5]:  # Limit to the first 5 articles
         title = article.get_text().strip()
         link = article['href']
-        news_list.append(f"🔹 {title} - [Read More]({link})")
+        # Ensure the link is a full URL
+        full_link = urljoin(url, link)
+        news_list.append(f"🔹 {title} - [Read More]({full_link})")
 
     # Format the output
     response = "⚽ **Latest EPL News** ⚽\n\n"
@@ -43,7 +46,7 @@ def execute():
 
         if live_matches:
             response += "\n\n🔥 **Live Matches** 🔥\n"
-            for match in live_matches[:9]:  # Limit to 3 live matches
+            for match in live_matches[:3]:  # Limit to 3 live matches
                 match_info = match.get_text().strip()
                 response += f"⚡ {match_info}\n"
         else:
