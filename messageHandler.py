@@ -57,12 +57,29 @@ def handle_text_message(user_message):
 # Handle text commands
 def handle_text_command(command_name):
     try:
-        # Dynamically import command from CMD folder
-        cmd_module = importlib.import_module(f"CMD.{command_name}")
-        return cmd_module.execute()
-    except ImportError:
-        logger.warning("Command %s not found.", command_name)
-        return "Command not found."
+        # Get the path to the CMD directory
+        cmd_folder = "CMD"
+        
+        # List all the .py files in the CMD directory
+        for filename in os.listdir(cmd_folder):
+            if filename.endswith(".py"):  # Check if file ends with .py
+                module_name = filename[:-3]  # Remove the .py extension
+                try:
+                    # Dynamically import the module
+                    cmd_module = importlib.import_module(f"{cmd_folder}.{module_name}")
+                    logger.info(f"Module {module_name} loaded successfully.")
+                    
+                    # Call the execute function from the module
+                    return cmd_module.execute()
+                except Exception as e:
+                    logger.error(f"Error loading module {module_name}: {e}")
+                    continue
+        
+        return "No commands found in CMD directory."
+
+    except Exception as e:
+        logger.error(f"Error handling text command: {str(e)}")
+        return "An error occurred while processing the command."
 
 # Handle attachments (e.g., direct images)
 def handle_attachment(attachment_data, attachment_type="image"):
