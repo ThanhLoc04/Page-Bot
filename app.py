@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 import requests
 import messageHandler  # Import the message handler module
+import time
 
 # Load environment variables
 load_dotenv()
@@ -48,6 +49,8 @@ def webhook():
                     # Check if message has text with a command prefix
                     if message_command and message_command.startswith(PREFIX):
                         response = messageHandler.handle_text_command(message_command[len(PREFIX):])
+                        
+                    
                     elif message_attachments:
                         response = messageHandler.handle_attachment(message_attachments)
                     elif message_text:
@@ -83,6 +86,16 @@ def check_page_access_token():
         logger.info("Page access token is valid.")
     else:
         logger.error("Invalid page access token: %s", response.json())
+
+start_time = time.time()
+
+# Expose the start_time so CMD can access it
+def get_bot_uptime():
+    return time.time() - start_time
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0',port=3000)
