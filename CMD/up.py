@@ -1,5 +1,7 @@
-import app  # Import the main app to access `get_bot_uptime`
+import app  # Ensure app.get_bot_uptime() is implemented
 import time
+import psutil
+import shutil
 
 # Description dictionary
 Info = {
@@ -18,12 +20,35 @@ def format_duration(seconds):
     minutes, seconds = divmod(seconds, 60)
     return f"{int(days)}d {int(hours)}h {int(minutes)}m {int(seconds)}s"
 
+def get_cpu_usage():
+    # Fetch real CPU usage using psutil
+    return psutil.cpu_percent(interval=1)
+
+def get_memory_usage():
+    # Fetch real memory usage using psutil
+    memory = psutil.virtual_memory()
+    return memory.percent
+
+def get_storage_stats():
+    # Fetch storage details
+    total, used, free = shutil.disk_usage("/")
+    return {
+        "total": total // (1024**3),
+        "used": used // (1024**3),
+        "free": free // (1024**3)
+    }
+
 def execute():
     # Get the bot's uptime in seconds
     uptime_seconds = app.get_bot_uptime()
 
     # Format uptime for better readability
     uptime_str = format_duration(uptime_seconds)
+
+    # Fetch system stats
+    cpu_usage = get_cpu_usage()
+    memory_usage = get_memory_usage()
+    storage_stats = get_storage_stats()
 
     # Visual and structured response
     response = (
@@ -38,12 +63,12 @@ def execute():
         "⏳ **Uptime:**\n"
         f"   └─ {uptime_str}\n\n"
         "📊 **System Overview:**\n"
-        f"   • **CPU Usage:** {get_cpu_usage()}%\n"
-        f"   • **Memory Usage:** {get_memory_usage()}%\n\n"
+        f"   • **CPU Usage:** {cpu_usage}%\n"
+        f"   • **Memory Usage:** {memory_usage}%\n\n"
         "📁 **Storage:**\n"
-        "   • Total: Placeholder GB\n"
-        "   • Used: Placeholder GB\n"
-        "   • Free: Placeholder GB\n\n"
+        f"   • Total: {storage_stats['total']} GB\n"
+        f"   • Used: {storage_stats['used']} GB\n"
+        f"   • Free: {storage_stats['free']} GB\n\n"
         "━━━━━━━━━━━━━━━━━━━━━━━\n"
         "💡 **Additional Information:**\n"
         "   • This bot is designed to assist and engage in an interactive manner.\n"
@@ -51,11 +76,3 @@ def execute():
     )
 
     return response
-
-def get_cpu_usage():
-    # Placeholder: Add real CPU usage code if required
-    return "N/A"
-
-def get_memory_usage():
-    # Placeholder: Add real memory usage code if required
-    return "N/A"
