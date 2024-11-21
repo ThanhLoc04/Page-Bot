@@ -1,17 +1,19 @@
 import requests
 from bs4 import BeautifulSoup
 import random
+Info = {
+    "Description":"Get Random quotes to Motivate you"
+}
 
 def execute():
     # Scrape quotes from the website
     url = "http://quotes.toscrape.com/"
+    response = requests.get(url)
     
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an HTTPError for bad responses
-    except requests.exceptions.RequestException as e:
-        return f"⚠️ Unable to access the quotes website at the moment. Error: {str(e)}"
-    
+    # Check if the page is accessible
+    if response.status_code != 200:
+        return "⚠️ Unable to access the quotes website at the moment. Please try again later."
+
     # Parse HTML content
     soup = BeautifulSoup(response.text, 'html.parser')
     quotes = soup.find_all("div", class_="quote")
