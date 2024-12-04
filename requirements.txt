@@ -4,6 +4,3 @@ python-dotenv
 flask-cors
 google-generativeai
 beautifulsoup4
-
-
-
